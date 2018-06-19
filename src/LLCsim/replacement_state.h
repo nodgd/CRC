@@ -29,7 +29,7 @@ typedef enum
     CRC_REPL_FIFO       = 2,
     CRC_REPL_SECRU      = 3,
     CRC_REPL_PSS        = 4,
-    CRC_REPL_FREQ64     = 4,
+    CRC_REPL_FREQ64     = 5,
 } ReplacemntPolicy;
 
 // Replacement State Per Cache Line
