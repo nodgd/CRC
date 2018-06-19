@@ -78,9 +78,9 @@ void CACHE_REPLACEMENT_STATE::InitReplacementState()
     
     // My algorithm: PSS
     pss_val = new double * [numsets];
-    for (int si = 0; si < numsets; si ++) {
+    for (int si = 0; si < (int) numsets; si ++) {
         pss_val[si] = new double [assoc];
-        for (int w = 0; w < assoc; w ++) {
+        for (int w = 0; w < (int) assoc; w ++) {
             pss_val[si][w] = 0;
         }
     }
@@ -120,17 +120,10 @@ INT32 CACHE_REPLACEMENT_STATE::GetVictimInSet( UINT32 tid, UINT32 setIndex, cons
     }
     else if( replPolicy == CRC_REPL_SECRU )
     {
-        // Contestants:  ADD YOUR VICTIM SELECTION FUNCTION HERE
         return Get_SECRU_Victim( setIndex );
-    }
-    else if( replPolicy == CRC_REPL_WRU )
-    {
-        // Contestants:  ADD YOUR VICTIM SELECTION FUNCTION HERE
-        return Get_WRU_Victim( setIndex );
     }
     else if( replPolicy == CRC_REPL_PSS )
     {
-        // Contestants:  ADD YOUR VICTIM SELECTION FUNCTION HERE
         return Get_PSS_Victim( setIndex );
     }
 
@@ -172,10 +165,6 @@ void CACHE_REPLACEMENT_STATE::UpdateReplacementState(
     else if( replPolicy == CRC_REPL_SECRU )
     {
         UpdateSECRU( setIndex, updateWayID );
-    }
-    else if( replPolicy == CRC_REPL_WRU )
-    {
-        UpdateWRU( setIndex, updateWayID );
     }
     else if( replPolicy == CRC_REPL_PSS )
     {
