@@ -1,0 +1,12 @@
+bin/*
+*/bin/*
+runs/output*
+
+*.o
+*.so
+*.so.*
+*.a
+*.gz
+*.32
+*.64
+
