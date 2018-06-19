@@ -84,6 +84,20 @@ void CACHE_REPLACEMENT_STATE::InitReplacementState()
             pss_val[si][w] = 0;
         }
     }
+    
+    //My algorithm: FREQ64
+    freq64 = new uint64 * [numsets];
+    for (int si = 0; si < (int) numsets; si ++) {
+        freq64[si] = new uint64 [assoc];
+        for (int w = 0; w < (int) assoc; w ++) {
+            freq64[si][w] = 0;
+        }
+    }
+    freq64_bc = new int [1 << 16];
+    freq64_bc[0] = 0;
+    for (int i = 1; i < 1 << 16; i ++) {
+        freq64_bc[i] = freq64_bc[i >> 1] + (i & 1);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,6 +139,10 @@ INT32 CACHE_REPLACEMENT_STATE::GetVictimInSet( UINT32 tid, UINT32 setIndex, cons
     else if( replPolicy == CRC_REPL_PSS )
     {
         return Get_PSS_Victim( setIndex );
+    }
+    else if( replPolicy == CRC_REPL_FREQ64 )
+    {
+        return Get_FREQ64_Victim( setIndex );
     }
 
     // We should never get here
@@ -169,6 +187,10 @@ void CACHE_REPLACEMENT_STATE::UpdateReplacementState(
     else if( replPolicy == CRC_REPL_PSS )
     {
         UpdatePSS( setIndex, updateWayID );
+    }
+    else if( replPolicy == CRC_REPL_FREQ64 )
+    {
+        UpdateFREQ64( setIndex, updateWayID );
     }
     
     
@@ -320,5 +342,30 @@ void CACHE_REPLACEMENT_STATE::UpdatePSS( UINT32 setIndex, INT32 updateWayID ) {
         curPss[way] *= PSS_CONSTANT;
     }
     curPss[updateWayID] += 1.0;
+}
+
+/*
+ *  My algorithm: FREQ64
+ */
+int CACHE_REPLACEMENT_STATE::getBitCount(uint64 x) {
+    return freq64_bc[x & 0xffff] + freq64_bc[x >> 16 & 0xffff] + freq64_bc[x >> 32 & 0xffff] + freq64_bc[x >> 48 & 0xffff];
+}
+INT32 CACHE_REPLACEMENT_STATE::Get_FREQ64_Victim( UINT32 setIndex ) {
+    uint64 * curFreq = freq64[setIndex];
+    int minWay = 0;
+    for (int way = 0; way < (int) assoc; way ++) {
+        if (getBitCount(curFreq[minWay]) > getBitCount(curFreq[way])) {
+            minWay = way;
+        }
+    }
+    curFreq[minWay] = 0;
+    return minWay;
+}
+void CACHE_REPLACEMENT_STATE::UpdateFREQ64( UINT32 setIndex, INT32 updateWayID ) {
+    uint64 * curFreq = freq64[setIndex];
+    for (int way = 0; way < (int) assoc; way ++) {
+        curFreq[way] <<= 1;
+    }
+    curFreq[updateWayID] |= 1;
 }
 

@@ -29,6 +29,7 @@ typedef enum
     CRC_REPL_FIFO       = 2,
     CRC_REPL_SECRU      = 3,
     CRC_REPL_PSS        = 4,
+    CRC_REPL_FREQ64     = 4,
 } ReplacemntPolicy;
 
 // Replacement State Per Cache Line
@@ -41,6 +42,8 @@ typedef struct
 } LINE_REPLACEMENT_STATE;
 
 const double PSS_CONSTANT = 0.8;
+
+typedef unsigned long long uint64;
 
 // The implementation for the cache replacement policy
 class CACHE_REPLACEMENT_STATE
@@ -56,6 +59,9 @@ class CACHE_REPLACEMENT_STATE
     UINT32 * fifo_repl;
     
     double ** pss_val;
+    
+    uint64 ** freq64;
+    int * freq64_bc;
 
     COUNTER mytimer;  // tracks # of references to the cache
 
@@ -92,6 +98,10 @@ class CACHE_REPLACEMENT_STATE
     
     INT32  Get_PSS_Victim( UINT32 setIndex );
     void   UpdatePSS( UINT32 setIndex, INT32 updateWayID );
+    
+    int getBitCount(uint64 x);
+    INT32  Get_FREQ64_Victim( UINT32 setIndex );
+    void   UpdateFREQ64( UINT32 setIndex, INT32 updateWayID );
 };
 
 
