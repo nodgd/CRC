@@ -317,7 +317,7 @@ INT32 CACHE_REPLACEMENT_STATE::Get_PSS_Victim( UINT32 setIndex ) {
 void CACHE_REPLACEMENT_STATE::UpdatePSS( UINT32 setIndex, INT32 updateWayID ) {
     double * curPss = pss_val[setIndex];
     for (int way = 0; way < (int) assoc; way ++) {
-        curPss[way] * = PSS_CONSTANT;
+        curPss[way] *= PSS_CONSTANT;
     }
     curPss[updateWayID] += 1.0;
 }
