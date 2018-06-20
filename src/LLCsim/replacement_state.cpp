@@ -69,6 +69,7 @@ void CACHE_REPLACEMENT_STATE::InitReplacementState()
     }
 
     // Contestants:  ADD INITIALIZATION FOR YOUR HARDWARE HERE
+    
     // My algorithm: FIFO
     fifo_repl = new UINT32[numsets];
     for (UINT32 setIndex = 0; setIndex < numsets; setIndex ++) {

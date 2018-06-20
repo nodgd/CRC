@@ -3,8 +3,8 @@ import threading
 
 SH = '../bin/CMPsim.usetrace.32 -threads 1 -t ../traces/%s -o %s -cache UL3:1024:64:16 -LLCrepl %d'
 
-alg_id = 3
-alg_name = 'output_SECRU'
+alg_id = 4
+alg_name = 'output_PSS[0.5]'
 
 def run(fi, fo):
     os.system(SH % (fi, fo, alg_id, ))
